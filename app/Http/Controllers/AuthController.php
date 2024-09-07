@@ -19,10 +19,11 @@ class AuthController extends Controller
             'telefone' => 'nullable|string|max:20',
             'celular' => 'required|string|max:20',
             'tipo' => 'required|in:estagiario,coordenadora,atendente',
+            'RA' => 'required_if:tipo,estagiario|nullable|string|max:20',
         ]);
         
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors(), 422);       
         }
 
         $input = $request->all();
@@ -49,6 +50,7 @@ class AuthController extends Controller
             $success['token'] = $request->user()->createToken('invoice')->plainTextToken;
             $success['nome'] = $user->nome;
             $success['tipo'] = $user->tipo;
+            $success['RA'] = $user->RA;
 
             return $this->sendResponse($success, 'Usuário logado com sucesso');
         }

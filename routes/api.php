@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlunoRegistro;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,12 +26,17 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('login', 'login');
 
     Route::get('unauthorized',  'unauthorized')->name('login');//erro de nao autorizado pro sanctum
-    
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('user',  'getUser');
-            //rotas que necessitam o usuario estar autenticado
-    });
 });
+
+//rotas que necessitam o usuario estar autenticado
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'getUser']);
+
+    //Cadastro aluno
+    Route::post('/cadastrarAluno', [AlunoRegistro::class, 'cadastrarAcademico']);
+    Route::get('/consultaAluno', [AlunoRegistro::class, 'getAluno']);
+});
+
 
 
 
