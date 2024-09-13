@@ -18,19 +18,6 @@ class AlunoRegistro extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'Nome', 'Curso', 'TipoPagCurso', 'RA', 'Idade', 'Termo',
-        'Celular', 'Telefone', 'DataNascimento', 'EstadoCivil',
-        'Sexo', 'Residencia', 'FamiliaReside', 'Locomocao', 'TempoEstudoDia'
+        'Nome', 'Curso', 'RA', 'Idade', 'Termo'
     ];
-
-
-    public function formacaoAluno() //LIGADO A FORMACAO ALUNO 1 PRA 1
-    {
-        return $this->hasOne(FormacaoAluno::class, 'IdAluno', 'IdAluno');
-    }
-
-    public function informacoesAjuda() //LIGADO A INFORMACOES AJUDA 1 PRA 1
-    {
-        return $this->hasOne(InformacoesAjuda::class, 'IdAluno', 'IdAluno');
-    }
 }

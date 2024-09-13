@@ -22,11 +22,15 @@ use Illuminate\Support\Facades\Route;
 
 //AUTH CONTROLLER
 Route::controller(AuthController::class)->group(function(){
-    Route::post('register', 'register');
+    Route::post('register', 'register'); //rota segura
+    Route::post('register-vulnerable', 'registerVulnerable'); // rota vulneravel
+
     Route::post('login', 'login');
 
     Route::get('unauthorized',  'unauthorized')->name('login');//erro de nao autorizado pro sanctum
 });
+
+
 
 //rotas que necessitam o usuario estar autenticado
 Route::middleware('auth:sanctum')->group(function () {

@@ -27,37 +27,9 @@ class AlunoRegistro extends Controller
             //AlunoRegistro validaca
             'Nome' => 'required|string|max:255',
             'Curso' => 'required|string|max:255',
-            'TipoPagCurso' => 'required|string|max:255',
             'RA' => 'required|string|max:8',
             'Idade' => 'required|integer',
-            'Termo' => 'required|integer',
-            'Celular' => 'required|string|max:255',
-            'Telefone' => 'nullable|string|max:255',
-            'DataNascimento' => 'required|date',
-            'EstadoCivil' => 'required|string|max:255',
-            'Sexo' => 'required|string|max:255',
-            'Residencia' => 'required|string|max:255',
-            'FamiliaReside' => 'required|string|max:255',
-            'Locomocao' => 'required|string|max:255',
-            'TempoEstudoDia' => 'required|string|max:255',
-
-            //FormacaoAluno valiacao
-            'AnoConclEnsMedio' => 'required|integer',
-            'TipoEscola' => 'required|string|max:255',
-            'FormacaoAnterior' => 'required|string|max:255',
-            'CursoAnterior' => 'nullable|string|max:255',
-            'AnoConclusaoAnt' => 'nullable|integer',
-            'ProfissaoTipo' => 'required|string|max:255',
-            'ProfissaoLocal' => 'nullable|string|max:255',
-            'ProfissaoCargo' => 'nullable|string|max:255',
-            'ProfissaoCHSemanal' => 'nullable|integer',
-
-            //InformacoesAjuda validacao
-            'AreasAjuda' => 'required|string',
-            'ExplicacaoAreas' => 'required|string',
-            'ExplicacaoAjuda' => 'required|string',
-            'ComoChegouNuap' => 'required|string',
-            'ComoConhecNuap' => 'required|string',
+            'Termo' => 'required|integer'
         ]);
 
         if ($validator->fails()) {
@@ -74,45 +46,10 @@ class AlunoRegistro extends Controller
             $aluno = ModelsAlunoRegistro::create([
                 'Nome' => $data['Nome'],
                 'Curso' => $data['Curso'],
-                'TipoPagCurso' => $data['TipoPagCurso'],
                 'RA' => $data['RA'],
                 'Idade' => $data['Idade'],
-                'Termo' => $data['Termo'],
-                'Celular' => $data['Celular'],
-                'Telefone' => $data['Telefone'],
-                'DataNascimento' => $data['DataNascimento'],
-                'EstadoCivil' => $data['EstadoCivil'],
-                'Sexo' => $data['Sexo'],
-                'Residencia' => $data['Residencia'],
-                'FamiliaReside' => $data['FamiliaReside'],
-                'Locomocao' => $data['Locomocao'],
-                'TempoEstudoDia' => $data['TempoEstudoDia']
+                'Termo' => $data['Termo']
             ]);
-    
-            //CRIANDO DEPOIS A FORMACAO ALUNO
-            FormacaoAluno::create([
-                'IdAluno' => $aluno->IdAluno,  //AlunoRegistro relacionamento
-                'AnoConclEnsMedio' => $data['AnoConclEnsMedio'],
-                'TipoEscola' => $data['TipoEscola'],
-                'FormacaoAnterior' => $data['FormacaoAnterior'],
-                'CursoAnterior' => $data['CursoAnterior'],
-                'AnoConclusaoAnt' => $data['AnoConclusaoAnt'],
-                'ProfissaoTipo' => $data['ProfissaoTipo'],
-                'ProfissaoLocal' => $data['ProfissaoLocal'],
-                'ProfissaoCargo' => $data['ProfissaoCargo'],
-                'ProfissaoCHSemanal' => $data['ProfissaoCHSemanal']
-            ]);
-    
-           //CRIANDO DEPOIS INFORMACOES AJUDA
-            InformacoesAjuda::create([
-                'IdAluno' => $aluno->IdAluno,  //AlunoRegistro relacionamento
-                'AreasAjuda' => $data['AreasAjuda'],
-                'ExplicacaoAreas' => $data['ExplicacaoAreas'],
-                'ExplicacaoAjuda' => $data['ExplicacaoAjuda'],
-                'ComoChegouNuap' => $data['ComoChegouNuap'],
-                'ComoConhecNuap' => $data['ComoConhecNuap']
-            ]);
-    
 
             DB::commit();
     
@@ -144,47 +81,23 @@ class AlunoRegistro extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'RA' => 'nullable|string|max:8',
-            'registro' => 'nullable|integer'
+            'RA' => 'required|string|max:8'
         ]);
         if ($validator->fails()) {
             return $this->sendError('Falta de informação', $validator->errors(), 422);
         }
 
-        if (!$request->has('RA') && !$request->has('registro')) {
-            return $this->sendError('Sem Informação', ['error' => 'RA ou/e número do registro do aluno é necessário'], 400);
-        }
-
         //buscar r aluno pelo ra ou/e pelo registro
         $query = ModelsAlunoRegistro::query();
-        if ($request->has('RA')) {
-            $query->where('RA', $request->RA);
-        }
-        if ($request->has('registro')) {
-            $query->where('IdAluno', $request->registro);
-        }
+        $query->where('RA', $request->RA);
         $aluno = $query->first();
 
         if (!$aluno) {
             return $this->sendError('Não Encontrado', ['error' => 'Registro do aluno não encontrado'], 404);
         }
     
-        if ($request->has('RA') && $request->has('registro')) {
-            if ($aluno->RA !== $request->RA || $aluno->IdAluno != $request->registro) {
-                return $this->sendError('Dados Inconsistentes', ['error' => 'Os dados fornecidos não correspondem ao mesmo aluno'], 400);
-            }
-        }
-
-
-        $formacao = FormacaoAluno::where('IdAluno', $aluno->IdAluno)->first();
-        $informacoesAjuda = InformacoesAjuda::where('IdAluno', $aluno->IdAluno)->first();
-
-
         $response = [
-            'registro' => $aluno->IdAluno,
-            'aluno' => $aluno,
-            'formacao' => $formacao,
-            'informacoes_ajuda' => $informacoesAjuda
+            'aluno' => $aluno->RA
         ];
 
         return $this->sendResponse($response, 'Registro Encontrado!');
