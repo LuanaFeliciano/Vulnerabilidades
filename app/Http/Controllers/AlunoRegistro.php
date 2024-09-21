@@ -15,13 +15,14 @@ class AlunoRegistro extends Controller
     public function cadastrarAcademico(Request $request)
     {
 
-        //verifiano se o usuario tem permissao para cadastrar o academico
-        $user = Auth::user(); 
+        //verificando se o usuario tem permissao para cadastrar o academico
+        $user = Auth::user(); //SE TORNA VULNERAVEL SE TIRAR ESSA PARTE 
 
         if (!in_array($user->tipo, ['coordenadora', 'atendente'])) {
             return $this->sendError('Unauthorized', ['error' => 'Você não tem permissão para cadastrar acadêmicos'], 403);
         }
-       
+       //------------------------------------------------------------------------------------------------------------------
+
         $validator = Validator::make($request->all(), [
 
             //AlunoRegistro validaca
