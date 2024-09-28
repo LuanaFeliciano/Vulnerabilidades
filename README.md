@@ -33,6 +33,8 @@ Foi realizado rotas de api para mostrar a seguinte vulnerabilidade:
     "RA" : "12345678"
   }
 
+O banco subi com Migrations e criei a database com postgres
+
 # Tecnologia Utilizada:
 <p align="left"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="250" alt="Laravel Logo"></a></p>
 
